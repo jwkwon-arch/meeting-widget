@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회의 담당자</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: transparent;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      min-height: 180px;
+      padding: 24px;
+      border: 1px solid #555;
+      border-radius: 14px;
+      background: #2f2f2f;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .label {
+      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #d8d8d8;
+    }
+
+    .current-name {
+      margin-bottom: 24px;
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .next {
+      font-size: 16px;
+      font-weight: 600;
+      color: #bdbdbd;
+    }
+
+    .next-name {
+      color: #ffffff;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="label">📢 이번 주 회의 담당자</div>
+    <div class="current-name" id="currentPerson">권재원</div>
+
+    <div class="next">
+      ➡️ 다음 주 회의 담당자 :
+      <span class="next-name" id="nextPerson">최건흠</span>
+    </div>
+  </div>
+
+  <script>
+    const members = [
+      "권재원",
+      "최건흠",
+      "황영기",
+      "이슬",
+      "정지원",
+      "강지현",
+      "장서희"
+    ];
+
+    // 권재원이 담당을 시작한 월요일
+    const startMonday = new Date("2026-07-13T00:00:00+09:00");
+
+    function getMonday(date) {
+      const result = new Date(date);
+      const day = result.getDay();
+      const difference = day === 0 ? -6 : 1 - day;
+
+      result.setDate(result.getDate() + difference);
+      result.setHours(0, 0, 0, 0);
+
+      return result;
+    }
+
+    function updateMeetingPerson() {
+      const currentMonday = getMonday(new Date());
+      const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
+
+      const weeksPassed = Math.floor(
+        (currentMonday - startMonday) / millisecondsPerWeek
+      );
+
+      const currentIndex =
+        ((weeksPassed % members.length) + members.length) % members.length;
+
+      const nextIndex = (currentIndex + 1) % members.length;
+
+      document.getElementById("currentPerson").textContent =
+        members[currentIndex];
+
+      document.getElementById("nextPerson").textContent =
+        members[nextIndex];
+    }
+
+    updateMeetingPerson();
+
+    // 페이지를 계속 열어 둔 경우에도 자동 갱신
+    setInterval(updateMeetingPerson, 60 * 60 * 1000);
+  </script>
+</body>
+</html>
